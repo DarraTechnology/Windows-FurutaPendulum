@@ -1,0 +1,18 @@
+把 GUI 导出的唯一 config.deni 放在本目录。
+
+双击 FurutaPendulum.exe（或 --gui）要同时满足：
+1. 本目录只有一个 .deni
+2. exe 同目录有可用的 Darra.EtherCAT.Master 运行时（NuGet 包还原后随构建输出）
+3. 测试机上已按官方安装器装好 EtherCAT 驱动并完成网卡绑定
+
+命令行也可以直接点名 DENI，不必放在这里：
+  FurutaPendulum.exe --gui --deni D:\现场\furuta.deni
+  FurutaPendulum.exe --cli --config D:\现场\furuta.deni connect
+（--config 只有在指向 .deni 时才算 DENI；指向 .json 是参数文件，见 README）
+
+--cli --help / --cli --version 不需要 DENI，随时可跑。
+
+找不到 .deni 或找到多个，程序会明确报 deni_not_found 并退出，不会猜网卡、也不会伪造 DENI。
+启动失败原因同时落在 %LocalAppData%\DarraEtherCAT\FurutaPendulum\logs\startup_last_error.txt。
+
+ESI XML 不能替代 config.deni。DENI 的内容校验在 Connect() 里做，启动引导只负责定位路径。
