@@ -1165,13 +1165,12 @@ namespace FurutaPendulum.Control
             bool lowPsiOmegaOk =
                 Math.Abs(thetaFromUpright) >= 0.12 ||
                 Math.Abs(omegaEst) <= 0.8;
-            // 交棒入口硬门：|ψ|≤0.15、|ω_est|≤1.2。R25 12:16 段在 |ψ|=0.23、
-            // ω=-1.02 时放行（旧门允许到 0.25），0.36 s 内 ThetaOverrun；
-            // R22 成功段 ψ0=-0.144、ω0=1.02 仍在此门内。
+            // 交棒入口硬门（任务3 放宽）：|ψ|≤0.20、|ω_est|≤1.5、|φ̇|≤6.0；
+            // 入口不饱和与摆杆/摆臂加速度预算保持原值，其余捕获门不变。
             bool currentStateOk =
-                Math.Abs(thetaFromUpright) <= 0.15 &&
-                Math.Abs(omegaEst) <= 1.2 &&
-                Math.Abs(phiDotRadPerSec) <= 2.5 &&
+                Math.Abs(thetaFromUpright) <= 0.20 &&
+                Math.Abs(omegaEst) <= 1.5 &&
+                Math.Abs(phiDotRadPerSec) <= 6.0 &&
                 lowPsiOmegaOk &&
                 Math.Abs(aPend) <= 960.0 &&
                 Math.Abs(aArm) <= 160.0 &&
