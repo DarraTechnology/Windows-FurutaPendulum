@@ -238,6 +238,9 @@ namespace FurutaPendulum.Control
         /// </summary>
         private const double BalanceRecenterResumeRateRadPerSec2 = 50.0;
 
+        /// <summary>R22 叠加回中的加速度包线 [rad/s²]：只产生 ≤2 rad/s² 的慢速回中加速度。</summary>
+        private const double BalanceRecenterAccelRadPerSec2 = 2.0;
+
         /// <summary>
         /// 回中参考积分增益的标定系数：k_ref = 0.0288 / (r/l) [1/s]，夹在 [0.002, 1.0]。
         /// <para>
@@ -768,6 +771,11 @@ namespace FurutaPendulum.Control
         // 平衡反馈窗口覆盖（ms）：默认沿用起摆 40ms；台架可用 FURUTA_BALANCE_OMEGA_WINDOW_MS 调快反馈。
         private static readonly double BalanceOmegaWindowOverrideMs =
             ReadPositiveEnvDouble("FURUTA_BALANCE_OMEGA_WINDOW_MS");
+
+        // 观测器专用耦合比覆盖：R22 遥测回归有效耦合约 0.065，与机构标定 r/l=0.24 不同。
+        // 不设则沿用 limits.radius_ratio；设错会把摆臂自身激励放大成“强扰动”。
+        private static readonly double DisturbanceCouplingOverride =
+            ReadPositiveEnvDouble("FURUTA_DIST_COUPLING");
 
         private static double ReadPositiveEnvDouble(string name)
         {
@@ -5682,8 +5690,10 @@ namespace FurutaPendulum.Control
                                       ControlMath.IsFinite(_limitsActive.Mgl)
                     ? _limitsActive.Mgl / _limitsActive.JEq
                     : 0.0;
-                double modelRadiusRatio = ControlMath.IsFinite(_limitsActive.RadiusRatio)
-                    ? _limitsActive.RadiusRatio : 0.0;
+                double modelRadiusRatio = DisturbanceCouplingOverride > 0
+                    ? DisturbanceCouplingOverride
+                    : (ControlMath.IsFinite(_limitsActive.RadiusRatio)
+                        ? _limitsActive.RadiusRatio : 0.0);
                 double armReferenceError = Math.Abs(_balanceCmdRad - phi);
                 double recenterBiasError = recentering
                     ? Math.Abs(_balanceRecenterReferenceRad - phi) : 0.0;
@@ -5954,46 +5964,22 @@ namespace FurutaPendulum.Control
                      Math.Abs(omegaControl) > BalanceRecenterYieldOmegaRadPerSec);
                 if (recentering)
                 {
-                    // 回中不替换任何 PD 项，只给臂位置项一个慢速参考偏置 r。
-                    // 实测 φ=3.7 rad 时原 LQR 已处于稳态，说明存在常值平衡偏置；必须移动参考而不是
-                    // 把 Kφ<0 直接当位置误差反馈（那会产生右半平面极点）。
-                    // ṙ = −k_ref·(φ−中点)，k_ref 由标定 r/l 导出（见 BalanceRecenterReferenceGainNumerator）；
-                    // 5 状态特征值在 b=0.048~2.0 内最大实部为负，唯一平衡 φ=中点、r=0。
-                    if (!yieldToBalance)
+                    // R22 已验证方式：回中不替换 PD 位置项，只在 PD 的速度参考上叠加一个慢速回中速率。
+                    // 摆杆离开稳定带立即让路，不与 PD 抢方向。
+                    double centerError = _balanceRecenterCenterRad - phi;
+                    if (yieldToBalance)
                     {
-                        // 参考积分增益由标定耦合 r/l 导出：k_ref = 0.0288/(r/l)。
-                        // 原 Kφ̇/Kφ=0.724 只在小耦合（0.048）下稳定；R24 的 r/l=0.24 会得到
-                        // +0.120±0.857j 的右半平面根，回中自己就会把臂推走。这里用模型感知的
-                        // 稳定增益，保留“慢速移动参考到中点”的原意图；margin 仍是独立的安全层。
-                        // r/l<0.03 或未标定时 k_ref=0：回中参考保持不动，避免在结构边界附近
-                        // 用不可信耦合值推进参考。
-                        double coupling = ControlMath.IsFinite(_limitsActive.RadiusRatio)
-                            ? _limitsActive.RadiusRatio : 0.0;
-                        double refKi = coupling >= BalanceRecenterCouplingMin
-                            ? ControlMath.Clamp(
-                                BalanceRecenterReferenceGainNumerator / coupling,
-                                BalanceRecenterReferenceGainMin,
-                                BalanceRecenterReferenceGainMax)
-                            : 0.0;
-                        double refRateTarget = -refKi * (phi - _balanceRecenterCenterRad);
-                        // 参考速度用 50 rad/s² 斜率恢复：强扰动冻结解除后从 0 平滑接上，
-                        // 不做单拍阶跃。它只限外环 r 的速度，不是摆臂速度限幅。
                         _balanceRecenterRate = ControlMath.Slew(
-                            refRateTarget, _balanceRecenterRate,
-                            BalanceRecenterResumeRateRadPerSec2 * _dtSec);
-                        double refNext = _balanceRecenterReferenceRad
-                            + _balanceRecenterRate * _dtSec;
-                        _balanceRecenterReferenceRad = ControlMath.Clamp(
-                            refNext, limitMinRad, limitMaxRad);
+                            0.0, _balanceRecenterRate, BalanceAccMaxRadPerSec2 * _dtSec);
                     }
                     else
                     {
-                        // 冻结/让路是立即的：r 停止推进，PD 不受影响。
-                        _balanceRecenterRate = 0.0;
+                        double desiredRate = Math.Sign(centerError) *
+                            Math.Sqrt(Math.Max(
+                                2.0 * BalanceRecenterAccelRadPerSec2 * Math.Abs(centerError), 0.0));
+                        _balanceRecenterRate = ControlMath.Slew(
+                            desiredRate, _balanceRecenterRate, BalanceRecenterAccelRadPerSec2 * _dtSec);
                     }
-                    balancePosTerm = _balanceActiveProfile.KPhi *
-                        ControlMath.Clamp(phi - _balanceRecenterReferenceRad,
-                            -BalancePositionErrorClampRad, BalancePositionErrorClampRad);
                 }
                 else
                 {
@@ -6057,8 +6043,8 @@ namespace FurutaPendulum.Control
                 // 位置域做（下面 cmdNext 的 ±BalanceRecenterPositionLeadRad），不掐速度。
                 uCmdEff = _balancePhiDotCmd;
 
-                double referenceRate = uCmdEff;
-                // rcRate 是慢速臂参考 r 的移动速度；原四增益 PD 始终在线，参考积分只改变稳态参考点。
+                // R22：回中速率叠加在 PD 自积分的参考速度上，绝不独占位置参考。
+                double referenceRate = uCmdEff + (recentering ? _balanceRecenterRate : 0.0);
                 if (recentering)
                 {
                     referenceRate = ControlMath.Clamp(referenceRate,

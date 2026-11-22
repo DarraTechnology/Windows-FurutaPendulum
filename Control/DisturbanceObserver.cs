@@ -425,7 +425,7 @@ namespace FurutaPendulum.Control
                     input.PendulumAccelRadPerSec2,
                     -AccelerationClampRadPerSec2, AccelerationClampRadPerSec2);
                 predictedAccel = input.OmegaN2 * Math.Sin(input.PsiRad)
-                    - input.RadiusRatio * _armAccelModel;
+                    + input.RadiusRatio * _armAccelModel;
                 if (!ControlMath.IsFinite(predictedAccel))
                     predictedAccel = 0.0;
                 rawResidual = ControlMath.Clamp(
