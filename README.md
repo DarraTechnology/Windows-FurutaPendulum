@@ -54,9 +54,13 @@ dotnet build -c Debug -p:Platform=x64
 |---|---|---|
 | 1 ms | PASS | 完成 30 秒平衡，进程 `exit=0`，全程无 `Fault` |
 | 500 µs | PASS | 两次运行均完成 30 秒平衡，进程 `exit=0`，全程无 `Fault` |
-| 250 µs | 已测，需重调 | 平衡阶段出现 `BalanceLost`，尚未达到 30 秒平衡，需继续整定参数 |
+| 250 µs | 未通过 | decimation=2 时出现 `FollowingError`；full-rate 时出现 `BalanceLost`。当前 EZI 驱动与控制包线下的最高稳定频率为 500 µs |
 
-250 µs 不写成“已通过”。周期、PDO 布局和控制参数必须作为一组复核；修改周期后需重新导出 `config.deni`，并重新完成连接、使能、起摆、交棒和平衡验证。
+250 µs 未通过，不写成“已通过”。当前 EZI 驱动与控制包线下的最高稳定频率为 500 µs；decimation=2 配置出现 `FollowingError`，full-rate 配置出现 `BalanceLost`。周期、PDO 布局和控制参数必须作为一组复核；修改周期后需重新导出 `config.deni`，并重新完成连接、使能、起摆、交棒和平衡验证。
+
+### 抗扰观测器
+
+未通过：0.065 工况仍触发 `ThetaOverrun`，默认关闭，不写成“抗扰已通过”。
 
 ## 案例文章
 

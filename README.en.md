@@ -54,9 +54,13 @@ Use `--help` for the full parameter list. All motion commands must be used on re
 |---|---|---|
 | 1 ms | PASS | 30 s balance completed, process `exit=0`, no `Fault` |
 | 500 µs | PASS | Two runs, each with 30 s balance, process `exit=0`, no `Fault` |
-| 250 µs | Tested, retuning required | `BalanceLost` occurred during balance; 30 s balance not yet achieved; parameter tuning continues |
+| 250 µs | Not passed | `FollowingError` with decimation=2; `BalanceLost` at full rate. With the current EZI driver and control envelope, 500 µs is the highest stable frequency |
 
-250 µs is not claimed as passed. Cycle time, PDO layout and control parameters must be reviewed as one set. After changing the cycle time, re-export `config.deni` and repeat connect, enable, swing-up, handover and balance verification.
+250 µs is not passed and must not be described as passed. With the current EZI driver and control envelope, 500 µs is the highest stable frequency; the decimation=2 configuration produces `FollowingError`, and the full-rate configuration produces `BalanceLost`. Cycle time, PDO layout and control parameters must be reviewed as one set. After changing the cycle time, re-export `config.deni` and repeat connect, enable, swing-up, handover and balance verification.
+
+### Disturbance observer
+
+Not passed: at 0.065 it still triggers `ThetaOverrun`. It is disabled by default and must not be described as "disturbance rejection passed".
 
 ## Case article
 

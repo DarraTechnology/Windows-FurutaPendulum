@@ -54,9 +54,13 @@ Utilisez `--help` pour la liste complète des paramètres. Toutes les commandes 
 |---|---|---|
 | 1 ms | PASS | Équilibre de 30 s terminé, processus `exit=0`, aucun `Fault` |
 | 500 µs | PASS | Deux exécutions, chacune avec 30 s d'équilibre, processus `exit=0`, aucun `Fault` |
-| 250 µs | Testé, réglage à reprendre | `BalanceLost` pendant l'équilibre ; 30 s non atteintes ; réglage des paramètres en cours |
+| 250 µs | Non validé | `FollowingError` avec decimation=2 ; `BalanceLost` en full-rate. Avec le pilote EZI et l'enveloppe de commande actuels, 500 µs est la fréquence stable la plus élevée |
 
-250 µs n'est pas déclaré comme validé. La période, la disposition des PDO et les paramètres de commande doivent être revus ensemble. Après un changement de période, réexportez `config.deni` et refaites la vérification de connexion, activation, montée, passage et équilibre.
+250 µs n'est pas validé et ne doit pas être présenté comme validé. Avec le pilote EZI et l'enveloppe de commande actuels, 500 µs est la fréquence stable la plus élevée ; la configuration decimation=2 produit `FollowingError` et la configuration full-rate produit `BalanceLost`. La période, la disposition des PDO et les paramètres de commande doivent être revus ensemble. Après un changement de période, réexportez `config.deni` et refaites la vérification de connexion, activation, montée, passage et équilibre.
+
+### Observateur de perturbation
+
+Non validé : à 0.065, `ThetaOverrun` se déclenche encore. Désactivé par défaut ; ne pas présenter comme « rejet de perturbation validé ».
 
 ## Article de cas
 

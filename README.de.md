@@ -54,9 +54,13 @@ Mit `--help` werden alle Parameter angezeigt. Alle Bewegungsbefehle dürfen nur 
 |---|---|---|
 | 1 ms | PASS | 30 s Balance abgeschlossen, Prozess `exit=0`, kein `Fault` |
 | 500 µs | PASS | Zwei Läufe mit jeweils 30 s Balance, Prozess `exit=0`, kein `Fault` |
-| 250 µs | Getestet, Nachabstimmung erforderlich | `BalanceLost` während der Balance; 30 s Balance noch nicht erreicht; Parameterabstimmung läuft weiter |
+| 250 µs | Nicht bestanden | `FollowingError` bei decimation=2; `BalanceLost` bei full-rate. Mit dem aktuellen EZI-Treiber und Regelungs-Envelope ist 500 µs die höchste stabile Frequenz |
 
-250 µs wird nicht als bestanden bezeichnet. Zykluszeit, PDO-Layout und Regelparameter müssen als Einheit geprüft werden. Nach einer Änderung der Zykluszeit `config.deni` neu exportieren und Verbinden, Freigabe, Aufschwingen, Übergabe und Balance erneut verifizieren.
+250 µs ist nicht bestanden und darf nicht als bestanden bezeichnet werden. Mit dem aktuellen EZI-Treiber und Regelungs-Envelope ist 500 µs die höchste stabile Frequenz; die decimation=2-Konfiguration erzeugt `FollowingError`, die full-rate-Konfiguration `BalanceLost`. Zykluszeit, PDO-Layout und Regelparameter müssen als Einheit geprüft werden. Nach einer Änderung der Zykluszeit `config.deni` neu exportieren und Verbinden, Freigabe, Aufschwingen, Übergabe und Balance erneut verifizieren.
+
+### Störbeobachter
+
+Nicht bestanden: Bei 0.065 wird weiterhin `ThetaOverrun` ausgelöst. Standardmäßig deaktiviert; nicht als „Störunterdrückung bestanden“ bezeichnen.
 
 ## Fallstudie
 

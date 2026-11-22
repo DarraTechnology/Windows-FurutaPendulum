@@ -54,9 +54,13 @@ Use `--help` para ver todos los parámetros. Todos los comandos de movimiento de
 |---|---|---|
 | 1 ms | PASS | Equilibrio de 30 s completado, proceso `exit=0`, sin `Fault` |
 | 500 µs | PASS | Dos ejecuciones, cada una con 30 s de equilibrio, proceso `exit=0`, sin `Fault` |
-| 250 µs | Probado, requiere reajuste | Se produjo `BalanceLost` durante el equilibrio; aún no se alcanzan 30 s; continúa el ajuste de parámetros |
+| 250 µs | No superado | `FollowingError` con decimation=2; `BalanceLost` en full-rate. Con el driver EZI y la envolvente de control actuales, 500 µs es la frecuencia estable más alta |
 
-250 µs no se declara como aprobado. El ciclo, el diseño de PDO y los parámetros de control deben revisarse en conjunto. Tras cambiar el ciclo, vuelva a exportar `config.deni` y repita la verificación de conexión, habilitación, elevación, transferencia y equilibrio.
+250 µs no se supera y no debe declararse como superado. Con el driver EZI y la envolvente de control actuales, 500 µs es la frecuencia estable más alta; la configuración decimation=2 produce `FollowingError` y la configuración full-rate produce `BalanceLost`. El ciclo, el diseño de PDO y los parámetros de control deben revisarse en conjunto. Tras cambiar el ciclo, vuelva a exportar `config.deni` y repita la verificación de conexión, habilitación, elevación, transferencia y equilibrio.
+
+### Observador de perturbaciones
+
+No superado: con 0.065 sigue disparando `ThetaOverrun`. Está desactivado por defecto y no debe describirse como "rechazo de perturbaciones superado".
 
 ## Artículo del caso
 
