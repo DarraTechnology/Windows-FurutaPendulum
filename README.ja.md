@@ -10,11 +10,11 @@ Windows 向けの Furuta 回転倒立振子 EtherCAT 制御サンプルです。
 
 - Windows x64
 - .NET Framework 4.7.2（`net472`）
-- NuGet: `Darra.EtherCAT.Master` **2.13.23**
+- NuGet: `Darra.EtherCAT.Master` **2.13.16**
 
 ## 実行前提
 
-- 公式インストーラで Darra EtherCAT Master をインストールし、`DarraRT_Eth` ドライバを対象 NIC にバインドします。
+- 公式インストーラで Darra EtherCAT Master をインストールし、Darra EtherCAT リアルタイムドライバを対象 NIC にバインドします。
 - GUI から現場バスに対応する `config.deni` を書き出し、実行ファイルと同じディレクトリの `EtherCATRestore\` に配置します。
 - 実機で動かす前に、ハード配線の非常停止、STO、機械リミット、現場の安全確保が有効であることを確認してください。ソフトウェアリミットだけに依存しないでください。
 - ドライバへのアクセスには管理者権限が必要です。起動時の UAC 表示は正常です。
@@ -54,17 +54,10 @@ dotnet build -c Debug -p:Platform=x64
 |---|---|---|
 | 1 ms | PASS | 30 秒平衡を完了、プロセス `exit=0`、`Fault` なし |
 | 500 µs | PASS | 2 回の実行でいずれも 30 秒平衡、プロセス `exit=0`、`Fault` なし |
-| 250 µs | 不合格 | decimation=2 で `FollowingError`、full-rate で `BalanceLost`。現在の EZI ドライバと制御包絡線では 500 µs が最高安定周波数 |
-
-250 µs は不合格であり、「合格」として扱いません。現在の EZI ドライバと制御包絡線では 500 µs が最高安定周波数です。decimation=2 では `FollowingError`、full-rate では `BalanceLost` が発生します。周期、PDO レイアウト、制御パラメータは一式で見直す必要があります。周期変更後は `config.deni` を再出力し、接続、有効化、起振、引き継ぎ、平衡の検証をやり直してください。
-
-### 外乱オブザーバ
-
-不合格：0.065 の条件でも `ThetaOverrun` が発生します。既定では無効であり、「外乱抑制済み」とは記載しません。
 
 ## 事例記事
 
-- [250 µs 周期の Furuta 倒立振子](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/)（中国語）
+- [500 µs 周期の Furuta 倒立振子](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/)（中国語）
 
 ## リポジトリ
 

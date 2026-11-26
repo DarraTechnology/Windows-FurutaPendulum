@@ -10,11 +10,11 @@ Windows용 Furuta 회전 도립진자 EtherCAT 제어 예제입니다. 진자 �
 
 - Windows x64
 - .NET Framework 4.7.2 (`net472`)
-- NuGet: `Darra.EtherCAT.Master` **2.13.23**
+- NuGet: `Darra.EtherCAT.Master` **2.13.16**
 
 ## 실행 전제
 
-- 공식 설치 프로그램으로 Darra EtherCAT Master를 설치하고 `DarraRT_Eth` 드라이버를 대상 NIC에 바인딩합니다.
+- 공식 설치 프로그램으로 Darra EtherCAT Master를 설치하고 Darra EtherCAT 실시간 드라이버를 대상 NIC에 바인딩합니다.
 - GUI에서 현장 버스에 맞는 `config.deni`를 내보내 실행 파일과 같은 디렉터리의 `EtherCATRestore\`에 둡니다.
 - 실제 하드웨어에서 실행하기 전에 하드와이어 비상 정지, STO, 기계 리밋, 현장 정리가 유효한지 확인하십시오. 소프트웨어 리밋에만 의존하지 마십시오.
 - 드라이버 접근에 관리자 권한이 필요하며, 시작 시 UAC 창이 표시되는 것은 정상입니다.
@@ -54,17 +54,10 @@ dotnet build -c Debug -p:Platform=x64
 |---|---|---|
 | 1 ms | PASS | 30초 균형 완료, 프로세스 `exit=0`, `Fault` 없음 |
 | 500 µs | PASS | 2회 실행 모두 30초 균형, 프로세스 `exit=0`, `Fault` 없음 |
-| 250 µs | 미통과 | decimation=2에서 `FollowingError`, full-rate에서 `BalanceLost` 발생. 현재 EZI 드라이버와 제어 엔벨로프에서 500 µs가 최고 안정 주파수 |
-
-250 µs는 미통과이며 "통과"로 표기하지 않습니다. 현재 EZI 드라이버와 제어 엔벨로프에서 500 µs가 최고 안정 주파수입니다. decimation=2 구성에서는 `FollowingError`, full-rate 구성에서는 `BalanceLost`가 발생합니다. 주기, PDO 레이아웃, 제어 파라미터는 한 세트로 검토해야 합니다. 주기를 변경한 후에는 `config.deni`를 다시 내보내고 연결, 활성화, 기상, 인계, 균형 검증을 다시 수행하십시오.
-
-### 외란 관측기
-
-미통과: 0.065 조건에서도 `ThetaOverrun`이 발생합니다. 기본적으로 비활성화되어 있으며 "외란 억제 통과"로 표기하지 않습니다.
 
 ## 사례 글
 
-- [250 µs 주기의 Furuta 도립진자](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (중국어)
+- [500 µs 주기의 Furuta 도립진자](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (중국어)
 
 ## 저장소
 

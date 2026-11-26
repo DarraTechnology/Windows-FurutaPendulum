@@ -10,11 +10,11 @@ El ejemplo muestra la cooperación de esclavos de IO de contador y un eje paso a
 
 - Windows x64
 - .NET Framework 4.7.2 (`net472`)
-- NuGet: `Darra.EtherCAT.Master` **2.13.23**
+- NuGet: `Darra.EtherCAT.Master` **2.13.16**
 
 ## Antes de ejecutar
 
-- Instale Darra EtherCAT Master con el instalador oficial y vincule el controlador `DarraRT_Eth` a la tarjeta de red correspondiente.
+- Instale Darra EtherCAT Master con el instalador oficial y vincule el controlador de tiempo real de Darra EtherCAT a la tarjeta de red correspondiente.
 - Exporte desde la GUI un `config.deni` compatible con el bus de campo y colóquelo en `EtherCATRestore\`, junto al ejecutable.
 - Antes de operar con hardware real, confirme que la parada de emergencia cableada, el STO, los límites mecánicos y el despeje del área sean efectivos. No dependa solo de los límites de software.
 - Se requieren privilegios de administrador para acceder al controlador; el aviso de UAC al iniciar es normal.
@@ -54,17 +54,10 @@ Use `--help` para ver todos los parámetros. Todos los comandos de movimiento de
 |---|---|---|
 | 1 ms | PASS | Equilibrio de 30 s completado, proceso `exit=0`, sin `Fault` |
 | 500 µs | PASS | Dos ejecuciones, cada una con 30 s de equilibrio, proceso `exit=0`, sin `Fault` |
-| 250 µs | No superado | `FollowingError` con decimation=2; `BalanceLost` en full-rate. Con el driver EZI y la envolvente de control actuales, 500 µs es la frecuencia estable más alta |
-
-250 µs no se supera y no debe declararse como superado. Con el driver EZI y la envolvente de control actuales, 500 µs es la frecuencia estable más alta; la configuración decimation=2 produce `FollowingError` y la configuración full-rate produce `BalanceLost`. El ciclo, el diseño de PDO y los parámetros de control deben revisarse en conjunto. Tras cambiar el ciclo, vuelva a exportar `config.deni` y repita la verificación de conexión, habilitación, elevación, transferencia y equilibrio.
-
-### Observador de perturbaciones
-
-No superado: con 0.065 sigue disparando `ThetaOverrun`. Está desactivado por defecto y no debe describirse como "rechazo de perturbaciones superado".
 
 ## Artículo del caso
 
-- [Péndulo de Furuta con ciclo de 250 µs](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (chino)
+- [Péndulo de Furuta con ciclo de 500 µs](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (chino)
 
 ## Repositorio
 

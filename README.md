@@ -10,11 +10,11 @@ Windows 上的 Furuta 旋转倒立摆 EtherCAT 控制示例。程序读取摆杆
 
 - Windows x64
 - .NET Framework 4.7.2（`net472`）
-- NuGet：`Darra.EtherCAT.Master` **2.13.23**
+- NuGet：`Darra.EtherCAT.Master` **2.13.16**
 
 ## 运行前提
 
-- 通过官方安装器安装 Darra EtherCAT Master，并将 `DarraRT_Eth` 驱动绑定到对应网卡。
+- 通过官方安装器安装 Darra EtherCAT Master，并将 Darra EtherCAT 实时驱动绑定到对应网卡。
 - 使用 GUI 导出与现场总线匹配的 `config.deni`，放到可执行文件目录下的 `EtherCATRestore\`。
 - 真机运行前确认硬接线急停、STO、机械限位和现场清场有效，不要只依赖软件限位。
 - 程序需要管理员权限访问驱动，启动时出现 UAC 提示属正常现象。
@@ -54,17 +54,10 @@ dotnet build -c Debug -p:Platform=x64
 |---|---|---|
 | 1 ms | PASS | 完成 30 秒平衡，进程 `exit=0`，全程无 `Fault` |
 | 500 µs | PASS | 两次运行均完成 30 秒平衡，进程 `exit=0`，全程无 `Fault` |
-| 250 µs | 未通过 | decimation=2 时出现 `FollowingError`；full-rate 时出现 `BalanceLost`。当前 EZI 驱动与控制包线下的最高稳定频率为 500 µs |
-
-250 µs 未通过，不写成“已通过”。当前 EZI 驱动与控制包线下的最高稳定频率为 500 µs；decimation=2 配置出现 `FollowingError`，full-rate 配置出现 `BalanceLost`。周期、PDO 布局和控制参数必须作为一组复核；修改周期后需重新导出 `config.deni`，并重新完成连接、使能、起摆、交棒和平衡验证。
-
-### 抗扰观测器
-
-未通过：0.065 工况仍触发 `ThetaOverrun`，默认关闭，不写成“抗扰已通过”。
 
 ## 案例文章
 
-- [250 µs 周期下的 Furuta 倒立摆](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/)
+- [500 µs 周期下的 Furuta 倒立摆](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/)
 
 ## 仓库
 

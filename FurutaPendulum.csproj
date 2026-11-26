@@ -19,19 +19,18 @@
     <LangVersion>latest</LangVersion>
     <GenerateAssemblyInfo>true</GenerateAssemblyInfo>
     <!-- 版本口径唯一：<Version> / <AssemblyVersion> / <FileVersion> 与 PackageReference 同源。
-         2.13.23 与官方发布 SDK 同代；SDK 包内 win-x64 原生 Core SHA256 必须为
-         2687D6B9A332A6C7A926DEBCCDE21994628EB161CD75D153D95EC83EAD1FCB59。
+         2.13.16 为 NuGet 公开版本。
          换版本时四处一起改，不保留案例版本例外。 -->
-    <Version>2.13.23</Version>
-    <AssemblyVersion>2.13.23.0</AssemblyVersion>
-    <FileVersion>2.13.23.0</FileVersion>
+    <Version>2.13.16</Version>
+    <AssemblyVersion>2.13.16.0</AssemblyVersion>
+    <FileVersion>2.13.16.0</FileVersion>
     <ApplicationManifest>app.manifest</ApplicationManifest>
     <ApplicationHighDpiMode>DpiUnaware</ApplicationHighDpiMode>
     <IsPackable>false</IsPackable>
     <IsPublishable>false</IsPublishable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="Darra.EtherCAT.Master" Version="2.13.23" />
+    <PackageReference Include="Darra.EtherCAT.Master" Version="2.13.16" />
   </ItemGroup>
   <ItemGroup>
     <None Update="EtherCATRestore\放置GUI导出的config.deni到这里.txt">

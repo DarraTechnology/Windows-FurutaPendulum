@@ -10,11 +10,11 @@ L'exemple illustre la coexistence d'esclaves d'E/S de comptage et d'un axe pas �
 
 - Windows x64
 - .NET Framework 4.7.2 (`net472`)
-- NuGet : `Darra.EtherCAT.Master` **2.13.23**
+- NuGet : `Darra.EtherCAT.Master` **2.13.16**
 
 ## Avant l'exécution
 
-- Installez Darra EtherCAT Master avec l'installateur officiel et liez le pilote `DarraRT_Eth` à la carte réseau concernée.
+- Installez Darra EtherCAT Master avec l'installateur officiel et liez le pilote temps réel Darra EtherCAT à la carte réseau concernée.
 - Exportez depuis l'interface un `config.deni` correspondant au bus de terrain et placez-le dans `EtherCATRestore\`, à côté de l'exécutable.
 - Avant toute utilisation sur matériel réel, vérifiez l'efficacité de l'arrêt d'urgence câblé, du STO, des limites mécaniques et du dégagement de la zone. Ne vous fiez pas uniquement aux limites logicielles.
 - Des privilèges administrateur sont nécessaires pour accéder au pilote ; l'invite UAC au démarrage est normale.
@@ -54,17 +54,10 @@ Utilisez `--help` pour la liste complète des paramètres. Toutes les commandes 
 |---|---|---|
 | 1 ms | PASS | Équilibre de 30 s terminé, processus `exit=0`, aucun `Fault` |
 | 500 µs | PASS | Deux exécutions, chacune avec 30 s d'équilibre, processus `exit=0`, aucun `Fault` |
-| 250 µs | Non validé | `FollowingError` avec decimation=2 ; `BalanceLost` en full-rate. Avec le pilote EZI et l'enveloppe de commande actuels, 500 µs est la fréquence stable la plus élevée |
-
-250 µs n'est pas validé et ne doit pas être présenté comme validé. Avec le pilote EZI et l'enveloppe de commande actuels, 500 µs est la fréquence stable la plus élevée ; la configuration decimation=2 produit `FollowingError` et la configuration full-rate produit `BalanceLost`. La période, la disposition des PDO et les paramètres de commande doivent être revus ensemble. Après un changement de période, réexportez `config.deni` et refaites la vérification de connexion, activation, montée, passage et équilibre.
-
-### Observateur de perturbation
-
-Non validé : à 0.065, `ThetaOverrun` se déclenche encore. Désactivé par défaut ; ne pas présenter comme « rejet de perturbation validé ».
 
 ## Article de cas
 
-- [Pendule de Furuta à un cycle de 250 µs](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (chinois)
+- [Pendule de Furuta à un cycle de 500 µs](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (chinois)
 
 ## Dépôt
 

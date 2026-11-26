@@ -10,11 +10,11 @@ O exemplo demonstra a cooperação de escravos de IO de contagem e um eixo de pa
 
 - Windows x64
 - .NET Framework 4.7.2 (`net472`)
-- NuGet: `Darra.EtherCAT.Master` **2.13.23**
+- NuGet: `Darra.EtherCAT.Master` **2.13.16**
 
 ## Antes de executar
 
-- Instale o Darra EtherCAT Master com o instalador oficial e vincule o driver `DarraRT_Eth` à placa de rede correspondente.
+- Instale o Darra EtherCAT Master com o instalador oficial e vincule o driver de tempo real Darra EtherCAT à placa de rede correspondente.
 - Exporte pela GUI um `config.deni` compatível com o barramento de campo e coloque-o em `EtherCATRestore\`, ao lado do executável.
 - Antes de operar em hardware real, confirme a eficácia da parada de emergência cabeada, STO, limites mecânicos e liberação da área. Não dependa apenas dos limites de software.
 - São necessários privilégios de administrador para acessar o driver; o aviso de UAC na inicialização é normal.
@@ -54,17 +54,10 @@ Use `--help` para ver todos os parâmetros. Todos os comandos de movimento devem
 |---|---|---|
 | 1 ms | PASS | Equilíbrio de 30 s concluído, processo `exit=0`, sem `Fault` |
 | 500 µs | PASS | Duas execuções, cada uma com 30 s de equilíbrio, processo `exit=0`, sem `Fault` |
-| 250 µs | Não aprovado | `FollowingError` com decimation=2; `BalanceLost` em full-rate. Com o driver EZI e o envelope de controle atuais, 500 µs é a maior frequência estável |
-
-250 µs não é aprovado e não deve ser declarado como aprovado. Com o driver EZI e o envelope de controle atuais, 500 µs é a maior frequência estável; a configuração decimation=2 produz `FollowingError` e a configuração full-rate produz `BalanceLost`. Ciclo, layout de PDO e parâmetros de controle devem ser revisados em conjunto. Após alterar o ciclo, exporte novamente o `config.deni` e repita a verificação de conexão, habilitação, subida, transferência e equilíbrio.
-
-### Observador de perturbações
-
-Não aprovado: em 0.065 ainda dispara `ThetaOverrun`. Fica desativado por padrão e não deve ser descrito como "rejeição de perturbações aprovada".
 
 ## Artigo do caso
 
-- [Pêndulo de Furuta com ciclo de 250 µs](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (chinês)
+- [Pêndulo de Furuta com ciclo de 500 µs](https://ethercat.darra.xyz/doc/examples/furuta-pendulum-250us/) (chinês)
 
 ## Repositório
 
